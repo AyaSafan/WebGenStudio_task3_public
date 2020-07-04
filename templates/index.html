@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+ 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='static_files/styles.css') }}" />
+
+  <title>Task 3</title>
+</head>
+
+<body> 
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+        <div id="alert">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </div>
+  {% endif %}
+  {% endwith %}
+  
+  <div class="container">
+    <div class="row d-flex align-items-end pt-5">
+      <div class="col-md-6">
+        <form  action="{{ url_for('upload') }}"  method="post" enctype="multipart/form-data">
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="customFile" accept=".csv" name="file">
+            <label class="custom-file-label" for="customFile">Upload a csv file</label>
+          </div>
+          <center><br><button type="submit" id="upload" class="btn btn-primary btn-lg">Import</button></center>
+        </form>                
+      </div>
+      <div class="col-md-6">
+        <form action="{{ url_for('initialze')}}" method="post">
+          <div class="row mt-1">
+              <div class="col-5"><label>PostgreSQL Username</label></div>
+              <div class="col-7"><input type="text" class="form-control" name="username" required></div>
+          </div>
+            
+           <div class="row mt-1">
+              <div class="col-5"><label>PostgreSQL Password</label></div>
+              <div class="col-7"><input type="password" class="form-control" name="password" required></div>
+          </div>
+            
+          
+          <button type="submit" class="btn btn-primary btn-lg mt-2 float-right" value="Google Search">Initialize</button>
+        </form>
+        
+      </div>
+    </div>
+    <hr>
+
+    <div class="row d-flex justify-content-center">
+      <form action="{{ url_for('reset') }}" method="post">
+        <center><button type="submit" class="btn btn-primary btn-lg bg-danger">Reset All</button></center>
+        <br>
+      </form>
+      
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ClientDeal ID</th>
+            <th>Client ID</th>
+            <th>Client Name</th>
+            <th>Deal ID</th>
+            <th>Deal Name</th>
+            <th>Date</th>
+            <th>Accepted</th>
+            <th>Refused</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%for client in clients%}
+          <tr>
+            <td>{{client.id}}</td>
+            <td>{{client.client_id}}</td>
+            <td>{{client.client_name}}</td>
+            <td>{{client.deal_id}}</td>
+            <td>{{client.deal_name}}</td>
+            <td>{{client.date}}</td>
+            <td>{{client.accepted}}</td>
+            <td>{{client.refused}}</td>
+
+          </tr>
+          {%endfor%}
+
+          
+        </tbody>
+      </table>
+    <hr>
+  </div>
+  
+
+</body>
+
+
+<script>
+  
+  document.addEventListener('DOMContentLoaded', () => { 
+
+    if(document.getElementById('alert') != null ){
+    if(document.getElementById('alert').innerHTML != "" ){        
+        alert(document.getElementById('alert').innerHTML);
+        document.querySelector('#alert').innerHTML = ""; 
+   };
+   };
+  
+   
+  }); 
+</script>
+<script>
+  $("#upload").prop('disabled', true);
+  // Add the following code if you want the name of the file appear on select
+  $(".custom-file-input").on("change", function() {
+    if($(this).val() == ""){
+      $(this).siblings(".custom-file-label").html("Upload a video");
+      $("#upload").prop('disabled', true);
+    }
+    else {
+    var fileName = $(this).val().split("\\").pop();
+    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    $("#upload").prop('disabled', false);
+
+  }
+  });
+</script>
+
+
+</html>
